@@ -1,6 +1,6 @@
 import "server-only";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { supabaseConfigured } from "./env";
+import { supabaseConfigured, supabaseKey } from "./env";
 
 let client: SupabaseClient | null = null;
 
@@ -9,8 +9,10 @@ export function db(): SupabaseClient {
     throw new Error("Supabase não configurado.");
   }
   if (!client) {
-    client = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
+    const secret = process.env.SUPABASE_APP_SECRET;
+    client = createClient(process.env.SUPABASE_URL!, supabaseKey()!, {
       auth: { persistSession: false, autoRefreshToken: false },
+      global: { headers: secret ? { "x-app-secret": secret } : {} },
     });
   }
   return client;

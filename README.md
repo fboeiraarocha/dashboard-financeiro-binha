@@ -12,16 +12,18 @@ Next.js (App Router) hospedado na Vercel, dados no Supabase.
 - **Importação**: envie a planilha, confira o resumo (totais, período, linhas ignoradas) e confirme.
   Colunas reconhecidas: `Data`, `Valor`, `Tipo` (Receita/Despesa), `Descrição`, `Categoria`,
   ou colunas separadas `Receita` e `Despesa`. Há um modelo em `/modelo.csv`.
-- **Segurança**: o banco só é acessado pelo servidor com a chave `service_role`. As tabelas têm RLS
-  ligado e nenhuma policy, então a chave anônima não lê nada.
+- **Segurança**: o banco só é acessado pelo servidor. As tabelas têm RLS e só liberam acesso quando a
+  requisição traz o cabeçalho `x-app-secret` com o segredo guardado em `private.app_secret`
+  (schema que a API não expõe). Sem o segredo, a chave publicável não lê nem grava nada.
 
 ## Configuração
 
-1. No Supabase, rode `supabase/migrations/0001_init.sql` (SQL Editor ou `supabase db push`).
+1. No Supabase, rode as migrações em `supabase/migrations/` e grave o segredo:
+   `insert into private.app_secret (value) values ('<SUPABASE_APP_SECRET>');`
 2. Na Vercel, defina as variáveis (veja `.env.example`):
    - `APP_PASSWORD_HASH`: gere com `npm run hash-password -- 12345`
    - `SESSION_SECRET`: `openssl rand -hex 32`
-   - `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`
+   - `SUPABASE_URL`, `SUPABASE_KEY` (publicável) e `SUPABASE_APP_SECRET`
 
 Sem as variáveis do Supabase o painel funciona com dados fictícios e a importação mostra uma prévia sem gravar.
 
