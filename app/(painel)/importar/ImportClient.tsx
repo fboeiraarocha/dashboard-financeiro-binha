@@ -98,7 +98,7 @@ export function ImportClient({ enabled, firstImport }: { enabled: boolean; first
         }}
       >
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden>
-          <path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="var(--red-400)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M12 16V4m0 0-4 4m4-4 4 4M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="var(--blue-400)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <strong>{file ? file.name : "Arraste a planilha aqui ou clique para escolher"}</strong>
         <span className="muted">.xlsx ou .csv, até 4 MB</span>

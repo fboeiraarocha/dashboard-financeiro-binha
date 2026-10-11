@@ -4,8 +4,8 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 import type { MonthPoint } from "@/lib/aggregate";
 import { formatBRL, formatBRLCompact, formatMonth } from "@/lib/format";
 
-const INCOME = "#e5484d";
-const EXPENSE = "#9c8f90";
+const INCOME = "#4f8cff";
+const EXPENSE = "#6f7f9f";
 
 function Tip({ active, payload, label }: TooltipProps<number, string>) {
   if (!active || !payload?.length) return null;
@@ -36,13 +36,13 @@ export function MonthlyChart({ data }: { data: MonthPoint[] }) {
     <div style={{ width: "100%", height: 300 }}>
       <ResponsiveContainer>
         <BarChart data={data} barGap={2} barCategoryGap={data.length > 12 ? "18%" : "28%"} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
-          <CartesianGrid vertical={false} stroke="#2b1f21" />
+          <CartesianGrid vertical={false} stroke="#1a253c" />
           <XAxis
             dataKey="month"
             tickFormatter={formatMonth}
             tickLine={false}
-            axisLine={{ stroke: "#332527" }}
-            tick={{ fill: "#8e7b7d", fontSize: 12 }}
+            axisLine={{ stroke: "#1e2a43" }}
+            tick={{ fill: "#7f8cab", fontSize: 12 }}
             interval="preserveStartEnd"
             minTickGap={8}
           />
@@ -50,7 +50,7 @@ export function MonthlyChart({ data }: { data: MonthPoint[] }) {
             tickFormatter={(v: number) => formatBRLCompact(v)}
             tickLine={false}
             axisLine={false}
-            tick={{ fill: "#8e7b7d", fontSize: 12 }}
+            tick={{ fill: "#7f8cab", fontSize: 12 }}
             width={72}
           />
           <Tooltip content={<Tip />} cursor={{ fill: "rgba(255,255,255,0.04)" }} />

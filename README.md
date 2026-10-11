@@ -1,6 +1,6 @@
 # Painel Financeiro
 
-Dashboard financeiro em vermelho, com login por senha e importação de planilhas (.xlsx/.csv).
+Dashboard financeiro em azul, com login por senha e importação de planilhas (.xlsx/.csv).
 Next.js (App Router) hospedado na Vercel, dados no Supabase.
 
 ## Como funciona
