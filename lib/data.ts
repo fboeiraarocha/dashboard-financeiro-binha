@@ -38,7 +38,8 @@ async function fetchAllTransactions(): Promise<Transaction[]> {
   const pageSize = 1000;
   const out: Transaction[] = [];
   for (let from = 0; ; from += pageSize) {
-    const { data, error } = await db()
+    const client = await db();
+    const { data, error } = await client
       .from("transactions")
       .select("date, description, category, type, amount")
       .order("id", { ascending: true })
@@ -56,7 +57,7 @@ export type ImportRecord = { id: string; file_name: string; row_count: number; c
 
 export async function listImports(): Promise<ImportRecord[]> {
   if (!supabaseConfigured()) return [];
-  const { data, error } = await db()
+  const { data, error } = await (await db())
     .from("imports")
     .select("id, file_name, row_count, created_at")
     .order("created_at", { ascending: false })

@@ -5,32 +5,26 @@ Next.js (App Router) hospedado na Vercel, dados no Supabase.
 
 ## Como funciona
 
-- **Login**: uma senha única. O hash fica na variável `APP_PASSWORD_HASH` (senha inicial de teste: `12345`).
-  Depois que o banco estiver ligado, a senha pode ser trocada em **Conta**, e o novo hash passa a valer a partir do banco.
+- **Login**: uma senha única (inicial de teste: `12345`), guardada no banco com hash bcrypt.
+  Troque em **Conta**. O login cria uma sessão aleatória que também fica no banco e expira em 7 dias.
 - **Dados fictícios**: aparecem só até a primeira planilha real ser importada. A importação grava
   `real_data_started = true` em `app_settings`, e a partir daí os fictícios nunca mais aparecem.
 - **Importação**: envie a planilha, confira o resumo (totais, período, linhas ignoradas) e confirme.
   Colunas reconhecidas: `Data`, `Valor`, `Tipo` (Receita/Despesa), `Descrição`, `Categoria`,
   ou colunas separadas `Receita` e `Despesa`. Há um modelo em `/modelo.csv`.
-- **Segurança**: o banco só é acessado pelo servidor. As tabelas têm RLS e só liberam acesso quando a
-  requisição traz o cabeçalho `x-app-secret` com o segredo guardado em `private.app_secret`
-  (schema que a API não expõe). Sem o segredo, a chave publicável não lê nem grava nada.
+- **Segurança**: senha e sessões ficam no schema `private` do Supabase, que a API não expõe.
+  As tabelas têm RLS e só liberam leitura e gravação quando a requisição traz um token de sessão válido
+  (cookie httpOnly que o servidor repassa no cabeçalho `x-session-token`). A chave publicável sozinha
+  não lê nem grava nada, por isso o app não precisa de nenhum segredo na Vercel.
 
 ## Configuração
 
-1. No Supabase, rode as migrações em `supabase/migrations/` e grave o segredo:
-   `insert into private.app_secret (value) values ('<SUPABASE_APP_SECRET>');`
-2. Na Vercel, defina as variáveis (veja `.env.example`):
-   - `APP_PASSWORD_HASH`: gere com `npm run hash-password -- 12345`
-   - `SESSION_SECRET`: `openssl rand -hex 32`
-   - `SUPABASE_URL`, `SUPABASE_KEY` (publicável) e `SUPABASE_APP_SECRET`
-
-Sem as variáveis do Supabase o painel funciona com dados fictícios e a importação mostra uma prévia sem gravar.
+1. No Supabase, rode as migrações de `supabase/migrations/` em ordem.
+2. Na Vercel, importe o repositório e faça o deploy. Não há variáveis de ambiente obrigatórias.
 
 ## Desenvolvimento
 
 ```bash
 npm install
-cp .env.example .env.local   # preencha os valores
 npm run dev
 ```

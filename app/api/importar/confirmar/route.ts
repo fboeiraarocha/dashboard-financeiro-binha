@@ -16,11 +16,12 @@ export async function POST(req: Request) {
     );
   }
   let importId: string | null = null;
+  const client = await db();
   try {
     const { fileName, parsed } = await readUpload(req);
     if (parsed.rows.length === 0) throw new Error("Nenhum lançamento válido encontrado no arquivo.");
 
-    const { data: imp, error: impErr } = await db()
+    const { data: imp, error: impErr } = await client
       .from("imports")
       .insert({ file_name: fileName, row_count: parsed.rows.length })
       .select("id")
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
     const chunk = 1000;
     for (let i = 0; i < parsed.rows.length; i += chunk) {
       const batch = parsed.rows.slice(i, i + chunk).map((r) => ({ ...r, import_id: importId }));
-      const { error } = await db().from("transactions").insert(batch);
+      const { error } = await client.from("transactions").insert(batch);
       if (error) throw error;
     }
 
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
     revalidatePath("/", "layout");
     return NextResponse.json({ ok: true, count: parsed.rows.length });
   } catch (e) {
-    if (importId) await db().from("imports").delete().eq("id", importId);
+    if (importId) await client.from("imports").delete().eq("id", importId);
     const message = e instanceof Error ? e.message : typeof e === "object" && e && "message" in e ? String(e.message) : "Falha ao importar.";
     return NextResponse.json({ error: message }, { status: 400 });
   }
