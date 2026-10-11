@@ -117,5 +117,4 @@ insert into private.app_password (id, hash)
   values (true, extensions.crypt('12345', extensions.gen_salt('bf', 10)))
   on conflict (id) do nothing;
 
--- O segredo fixo antigo não é mais usado.
-drop table if exists private.app_secret;
+-- A tabela antiga private.app_secret deixa de ser usada; pode ser apagada depois, se quiser.
